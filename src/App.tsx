@@ -4,8 +4,9 @@ import { Register } from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
-import "/node_modules/primeflex/primeflex.css"
-import './App.css'
+import "/node_modules/primeflex/primeflex.css";
+import "./App.css";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -13,9 +14,11 @@ const App = () => {
       <PrimeReactProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route element={<ProtectedRoute/>}>
+              <Route path="/" element={<Dashboard />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </PrimeReactProvider>

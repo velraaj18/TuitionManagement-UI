@@ -3,7 +3,7 @@ import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useState, type SubmitEventHandler } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import type { CreateLoginRequest } from "../types/login";
 import { loginUser } from "../services/authService";
 
@@ -13,6 +13,11 @@ export function Login() {
 
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("jwtToken");
+  if (token) {
+    return <Navigate to="/" replace />;
+  }
+
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     const requestPayload: CreateLoginRequest = {
@@ -20,12 +25,12 @@ export function Login() {
       password: passcode,
     };
     const response = await loginUser(requestPayload);
-    
+
     localStorage.setItem("jwtToken", response.data.jwtToken);
     localStorage.setItem("refreshToken", response.data.refreshToken);
 
     console.log(response.data.jwtToken);
-    
+
     navigate("/");
   };
 

@@ -5,15 +5,16 @@ import { Password } from "primereact/password";
 import { useState, type SubmitEventHandler } from "react";
 import type { CreateRegisterRequest } from "../types/register";
 import { registerUser } from "../services/authService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Register = () => {
   const [email, setEmail] = useState<string>("");
   const [passcode, setPasscode] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setlastName] = useState<string>("");
+  const navigate = useNavigate();
 
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
     const requestPayload: CreateRegisterRequest = {
@@ -23,9 +24,10 @@ export const Register = () => {
       lastName: lastName,
     };
 
-    registerUser(requestPayload).then(response => {
-        console.log(response);
-    });
+    const response = await registerUser(requestPayload);
+    if(response.statusCode == 200){
+      navigate("/")
+    }
     
   };
   return (
