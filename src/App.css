@@ -4,6 +4,6 @@
   max-width: 500px;
 }
 
-/* .loginCard .p-card-title, .registerCard .p-card-title {
+.loginCard .p-card-title, .registerCard .p-card-title {
   text-align: center;
-} */
+}
