@@ -5,8 +5,12 @@ import Dashboard from "./pages/Dashboard";
 import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "/node_modules/primeflex/primeflex.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Student from "./pages/Student";
+import MainLayout from "./layout/MainLayout";
 
 const App = () => {
   return (
@@ -16,8 +20,11 @@ const App = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route element={<ProtectedRoute/>}>
-              <Route path="/" element={<Dashboard />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/student" element={<Student />} />
+              </Route>
             </Route>
           </Routes>
         </BrowserRouter>

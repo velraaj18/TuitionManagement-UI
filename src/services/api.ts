@@ -7,7 +7,7 @@ const baseApi = axios.create({
   },
 });
 
-axios.interceptors.request.use((req) => {
+baseApi.interceptors.request.use((req) => {
   const token = localStorage.getItem("jwtToken");
   if (token) {
     req.headers.Authorization = `Bearer ${token}`;
@@ -16,19 +16,29 @@ axios.interceptors.request.use((req) => {
   return req;
 });
 
-axios.interceptors.response.use(
+baseApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      var refreshToken = localStorage.getItem("refreshToken");
+    const originalRequest = error.config;
 
-      const response = await axios.post("/auth/refreshToken", refreshToken);
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        var refreshToken = localStorage.getItem("refreshToken");
 
-      localStorage.setItem("jwtToken", response.data.jwtToken);
+        const response = await axios.post("/auth/refreshToken", refreshToken);
 
-      error.config.headers.authorization = ` Bearer ${response.data.jwtToken}`;
+        localStorage.setItem("jwtToken", response.data.jwtToken);
 
-      return axios(error.config);
+        error.config.headers.authorization = ` Bearer ${response.data.jwtToken}`;
+
+        return axios(originalRequest);
+      } catch (error) {
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("refreshToken");
+
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   },
