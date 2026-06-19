@@ -1,18 +1,37 @@
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { FloatLabel } from "primereact/floatlabel";
-import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { useState, type SubmitEventHandler } from "react";
+import { createStudent } from "../services/studentService";
+import type { CreateStudentRequest } from "../types/student";
+import { useNavigate } from "react-router-dom";
 
 const StudentForm = () => {
   const [studentName, setStudentName] = useState<string>("");
-  const [phone, setPhone] = useState<number | null>();
+  const [phone, setPhone] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const handleSubmit : SubmitEventHandler<HTMLFormElement> = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit : SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    console.log(studentName, phone, email);
+    const payload : CreateStudentRequest = {
+      studentName : studentName,
+      phoneNumber : phone,
+      emailAddress : email
+    }
+    var response = await createStudent(payload);
+    if(response.statusCode === 200){
+      navigate("/");
+    }
+    clearEntries();
   };
+
+  function clearEntries(){
+    setStudentName("");
+    setEmail("");
+    setPhone("")
+  }
   return (
     <div className="studentForm">
       <Card
@@ -20,7 +39,7 @@ const StudentForm = () => {
         className="flex justify-content-center"
         pt={{
           title: { className: "flex justify-content-center" },
-          root: { className: "bg-green-800" },
+          root: { className: "bg-gray-200" },
         }}
       >
         <form onSubmit={handleSubmit}>
@@ -28,6 +47,7 @@ const StudentForm = () => {
             <FloatLabel>
               <InputText
                 id="studentname"
+                className=""
                 onChange={(e) => setStudentName(e.target.value)}
               />
               <label htmlFor="studentname">Student Name</label>
@@ -40,9 +60,11 @@ const StudentForm = () => {
               <label htmlFor="email">Email Address</label>
             </FloatLabel>
             <FloatLabel>
-              <InputNumber
+              <InputText
                 id="phone"
-                onValueChange={(e) => setPhone(e.value)}
+                keyfilter="int"
+                maxLength={10}
+                onChange={(e) => setPhone(e.target.value)}
               />
               <label htmlFor="phone">Phone Number</label>
             </FloatLabel>
