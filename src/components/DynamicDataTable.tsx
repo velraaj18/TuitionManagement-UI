@@ -1,31 +1,42 @@
-import { Column } from "primereact/column"
-import { DataTable } from "primereact/datatable"
+import { Column } from "primereact/column";
+import { DataTable, type DataTableValue } from "primereact/datatable";
+import type { ReactNode } from "react";
 
-export type ColumnProps = {
-    field : string,
-    header : string,
+export interface DynamicColumnProps<T extends DataTableValue> {
+  field: keyof T;
+  header: string;
+  body?: (rowData: T) => ReactNode;
 }
 
-export type DynamicDataTableProps = {
-    columns : ColumnProps[],
-    value : any[],
-    header : any[],
-    footer : any[],
+export interface DynamicDataTableProps<T extends DataTableValue> {
+  columns: DynamicColumnProps<T>[];
+  value: T[];
+  header?: ReactNode;
+  footer?: ReactNode;
 }
 
-const DynamicDataTable = (props : DynamicDataTableProps) => {
-    return(
-        <div>
-            Dynamic Data Table
-            <DataTable value={props.value} header={props.header} footer={props.footer}>
-                {
-                    props.columns.map((col, i) => (
-                        <Column key={col.field} header={col.field} field={col.field}/>
-                    ))
-                }
-            </DataTable>
-        </div>
-    )
-} 
+function DynamicDataTable<T extends DataTableValue>(
+  props: DynamicDataTableProps<T>,
+) {
+  return (
+    <div>
+      Dynamic Data Table
+      <DataTable
+        value={props.value}
+        header={props.header}
+        footer={props.footer}
+      >
+        {props.columns.map((col, i) => (
+          <Column
+            key={String(col.field)}
+            field={String(col.field)}
+            header={col.header}
+            body={col.body}
+          />
+        ))}
+      </DataTable>
+    </div>
+  );
+}
 
-export default DynamicDataTable
+export default DynamicDataTable;

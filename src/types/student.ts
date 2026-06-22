@@ -7,6 +7,14 @@ export interface CreateStudentRequest {
     emailAddress : string
 }
 
+export interface GetStudentResponse extends BaseAuditFields {
+    studentUID : number 
+    studentName : string 
+    phoneNumber : string
+    emailAddress : string
+    batchCount : number
+}
+
 export interface GetStudentDetailResponse extends BaseAuditFields {
     studentUID : number 
     studentName : string 

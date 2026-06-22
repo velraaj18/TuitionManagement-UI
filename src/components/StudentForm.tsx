@@ -22,7 +22,7 @@ const StudentForm = () => {
     }
     var response = await createStudent(payload);
     if(response.statusCode === 200){
-      navigate("/");
+      navigate("/student");
     }
     clearEntries();
   };

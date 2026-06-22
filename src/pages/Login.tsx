@@ -29,9 +29,10 @@ export function Login() {
     localStorage.setItem("jwtToken", response.data.jwtToken);
     localStorage.setItem("refreshToken", response.data.refreshToken);
 
-    console.log(response.data.jwtToken);
-
-    navigate("/");
+    console.log(response);
+    if (response.statusCode === 200) {
+      navigate("/");
+    }
   };
 
   return (
